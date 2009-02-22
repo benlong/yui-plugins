@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>YUI 3.0 - Endless Scrolling Example</title>
+<link rel="stylesheet" type="text/css" href="../../../build/cssreset/reset-min.css"> 
+<style>
+
+    #yahoo {margin: 10px;}
+
+    .yui-scroller {
+        height: 200px; width: 200px;
+    }
+
+    .yui-scroller-content {
+        background-color: #ccc;
+        margin: 5px;
+        height: inherit;
+        overflow: auto
+    }
+    
+    .yui-scroller-body {
+        padding: 5px;
+    }
+    
+    #log {width: 200px; height: 150px;}
+    #log_content { margin: 20px 5px 0 5px; background-color: #efefef; overflow: auto; height: inherit}
+    #log_content p {padding: 1px 2px;}
+
+</style>
+
+<body id="yahoo">
+
+<div class="yui-widget yui-scroller">
+    <div class="yui-scroller-content">
+        <ul class="yui-scroller-body"></ul>
+    </div>
+</div>
+
+<div id="log">
+    <div id="log_content"></div>
+</div>
+
+<script type="text/javascript" src="http://yui.yahooapis.com/3.0.0pr2/build/yui/yui-min.js"></script>
+<script type="text/javascript" src="js/scrollHandler.js"></script>
+
+
+<script>
+
+
+
+YUI().use('node', 'scrollHandler',  function(Y) {
+    var i = 0;
+    var log = function(msg) {
+        i++;
+        var l = Y.get('#log_content');
+        l.appendChild(l.create('<p>' + i + ": " + msg + '</p>'));
+        l.set('scrollTop', l.get('scrollHeight'))
+    }
+    
+    Y.on('contentready', function() {
+
+        this.plug(Y.plugin.scrollHandler);
+        
+        var sh = this.sh;
+        
+        if (typeof sh.events !== 'undefined') {
+            
+            sh.events.subscribe('scrolledUp', function(e) {
+                log('scrolled up'); // TODO: Remove console.log
+            });
+
+            sh.events.subscribe('scrolledDown', function() {
+                log('scrolled down'); // TODO: Remove console.log
+            });
+
+            sh.events.subscribe('scrolledToTop', function() {
+                log('scrolled to top'); // TODO: Remove console.log
+            });
+
+            sh.events.subscribe('scrolledToBottom', function() {
+                log('scrolled to bottom'); // TODO: Remove console.log
+            });
+            
+        }
+
+    }, '.yui-scroller-content');
+    
+    
+    // ignore for the example unless you want to see a quick and likely bad
+    // way to populate the list for the demo
+    Y.on('available', function() {
+        var iTotalListItems = 100;
+        for (var i=0; i<iTotalListItems; i++) {
+            this.appendChild(this.create('<li>' + i + '</li>'));
+        }
+    }, 'ul.yui-scroller-body');
+    
+
+});
+
+
+</script>
+
+
+
+
+</body>
+</html>
+
